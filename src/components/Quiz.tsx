@@ -24,7 +24,7 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
   // Initialize answers array when questions are loaded
   useEffect(() => {
     if (questions.length > 0 && answers.length !== questions.length) {
-      setAnswers(Array(questions.length).fill(null));
+      setAnswers(Array(questions.length).fill(0)); // Initialize with 0 instead of null
     }
   }, [questions, answers.length]);
 
@@ -49,7 +49,7 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
   };
 
   const handleRestart = () => {
-    setAnswers(Array(questions.length).fill(null));
+    setAnswers(Array(questions.length).fill(0));
     setCurrent(0);
     setSubmitted(false);
   };
@@ -67,7 +67,7 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
     );
   }
 
-  const currentAnswer = answers[current] !== null ? answers[current] : 0;
+  const currentAnswer = answers[current] || 0;
 
   return (
     <div className="quiz-app">
@@ -97,11 +97,6 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
                 className="slider"
                 aria-label={`Rate your response from 0 (Not at all) to 3 (Fully confident)`}
               />
-              <div className="slider-track">
-                <div
-                  className="slider-fill"
-                  style={{ width: `${(currentAnswer / 3) * 100}%` }}></div>
-              </div>
             </div>
 
             <div className="current-value">
@@ -130,7 +125,7 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
           <ul>
             {questions.map((q, idx) => (
               <li key={idx}>
-                {q} <strong>{scaleLabels[answers[idx]].label}</strong>
+                {q} <strong>{scaleLabels[answers[idx] || 0].label}</strong>
               </li>
             ))}
           </ul>
