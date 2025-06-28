@@ -390,7 +390,7 @@ body {
 .result-buttons {
   display: flex;
   gap: 16px;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
 }
 

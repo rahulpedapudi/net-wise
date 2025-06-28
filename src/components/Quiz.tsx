@@ -100,7 +100,7 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
             </div>
 
             <div className="current-value">
-              Current: {scaleLabels[currentAnswer].label}
+              {scaleLabels[currentAnswer].label}
             </div>
           </div>
 
