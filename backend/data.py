@@ -2,6 +2,12 @@
 # Organized by DigComp areas for easier frontend access
 
 questions_data = {
+    # 1: Information and Data Literacy
+    # 2 : Communicating through digital technologies
+    # 3: Digital content creation
+    # 4: Safetey and security
+    # 5: Problem solving
+
     "1.1": {
         "title": "Browsing, searching and filtering data, information and digital content",
         "description": "To articulate information needs, to search for data, information and content in digital environments, to access them and to navigate between them. To create and update personal search strategies.",

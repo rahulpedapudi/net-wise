@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import Navbar from "../components/Navbar";
 import { fuzzySearchWithScore } from "../utils/fuzzySearch";
+import { useAuth } from "../contexts/AuthContext";
 
 // Category data
 const categories = [
@@ -83,6 +84,7 @@ const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showQuiz, setShowQuiz] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const searchResults = fuzzySearchWithScore(
     searchTerm,
@@ -97,7 +99,11 @@ const HomePage: React.FC = () => {
   };
 
   const handleStartAssessment = () => {
-    setShowQuiz(true);
+    if (!user) {
+      navigate("/auth?next=/quiz");
+    } else {
+      setShowQuiz(true);
+    }
   };
 
   const handleHowItWorks = () => {

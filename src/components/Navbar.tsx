@@ -1,11 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogoClick = () => {
     navigate("/");
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+  const handleAuthClick = () => {
+    navigate("/auth");
   };
 
   return (
@@ -26,6 +37,21 @@ const Navbar: React.FC = () => {
           <a href="#contact" className="navbar-link">
             Contact
           </a>
+        </div>
+
+        <div className="navbar-auth">
+          {user ? (
+            <div className="user-info">
+              <span className="username">Welcome, {user.username}!</span>
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button onClick={handleAuthClick} className="login-button">
+              Login
+            </button>
+          )}
         </div>
       </div>
     </nav>

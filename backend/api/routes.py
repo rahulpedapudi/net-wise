@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint, current_app
-from ..data import (
+
+from data import (
     get_all_categories,
     get_category_questions,
     get_category_info,
@@ -7,6 +8,7 @@ from ..data import (
     get_all_questions,
     get_legacy_data
 )
+from auth import require_auth, optional_auth
 
 api_bp = Blueprint('api', __name__)
 
@@ -78,13 +80,26 @@ def search_questions():
 
 
 @api_bp.route("/analyse", methods=["POST"])
+@require_auth
 def analyse():
-    """Analyze quiz results"""
+    """Analyze quiz results - requires authentication"""
     data = request.get_json()
     if not data:
         return jsonify({"error": "No data provided"}), 400
+
+    # Get user info from authenticated request
+    user_data = request.user
+    user_id = user_data.get('user_id') if user_data else None
+    username = user_data.get('username') if user_data else None
+
     # Todo: add the analysis logic here
-    return jsonify({"message": "Data saved successfully"}), 200
+    # You can now use user_id and username to associate results with users
+
+    return jsonify({
+        "message": "Data saved successfully",
+        "user_id": user_id,
+        "username": username
+    }), 200
 
 
 # Legacy endpoint for backward compatibility

@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+interface Question {
+  id: string;
+  statement: string;
+  type: string;
+  level: string;
+}
+
 interface QuizProps {
   categoryId: string;
-  questions: string[];
+  questions: Question[];
   categoryName: string;
 }
 
@@ -37,9 +44,14 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
   const handleNext = () => {
     if (current < questions.length - 1) {
       setCurrent(current + 1);
-    } else {
-      setSubmitted(true);
     }
+  };
+
+  // send data to backend
+  // database name: netwise
+  // collection name: netwise-db
+  const handleSubmit = () => {
+    setSubmitted(true);
   };
 
   const handlePrevious = () => {
@@ -68,13 +80,14 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
   }
 
   const currentAnswer = answers[current] || 0;
+  const currentQuestion = questions[current];
 
   return (
     <div className="quiz-app">
       <h1>{categoryName} Quiz</h1>
       {!submitted ? (
         <div className="question-block">
-          <p>{questions[current]}</p>
+          <p>{currentQuestion.statement}</p>
 
           <div className="slider-container">
             <div className="slider-labels">
@@ -114,18 +127,32 @@ const Quiz: React.FC<QuizProps> = ({ categoryId, questions, categoryName }) => {
             <span className="question-counter">
               Question {current + 1} of {questions.length}
             </span>
-            <button onClick={handleNext} className="nav-button next">
-              {current === questions.length - 1 ? "Finish" : "Next"}
-            </button>
+            {current < questions.length - 1 && (
+              <button
+                onClick={handleNext}
+                className="nav-button next"
+                title="Next">
+                Next
+              </button>
+            )}
+            {current === questions.length - 1 && (
+              <button
+                onClick={handleSubmit}
+                className="nav-button next"
+                title="Submit">
+                Submit
+              </button>
+            )}
           </div>
         </div>
       ) : (
         <div className="results-block">
           <h2>Thank you for completing the {categoryName} quiz!</h2>
           <ul>
-            {questions.map((q, idx) => (
-              <li key={idx}>
-                {q} <strong>{scaleLabels[answers[idx] || 0].label}</strong>
+            {questions.map((question, idx) => (
+              <li key={question.id}>
+                {question.statement}{" "}
+                <strong>{scaleLabels[answers[idx] || 0].label}</strong>
               </li>
             ))}
           </ul>
