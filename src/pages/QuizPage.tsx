@@ -1,41 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Quiz from "../components/Quiz";
 
-// Category mapping from frontend IDs to backend IDs
-const categoryMapping = {
-  "info-data-literacy": "1.1",
-  "communication-collaboration": "2.1",
-  "digital-content-creation": "2.2",
-  "safety-security": "2.5",
-  "problem-solving": "2.6",
-};
-
-// Category data for name lookup
-const categories = [
+// Main competency data for name lookup
+const competencies = [
   {
-    id: "info-data-literacy",
+    id: "1",
     name: "Information and Data Literacy",
-    backendId: "1.1",
   },
   {
-    id: "communication-collaboration",
+    id: "2",
     name: "Communication and Collaboration",
-    backendId: "2.1",
   },
   {
-    id: "digital-content-creation",
+    id: "3",
     name: "Digital Content Creation",
-    backendId: "2.2",
   },
   {
-    id: "safety-security",
+    id: "4",
     name: "Safety and Security",
-    backendId: "2.5",
   },
   {
-    id: "problem-solving",
+    id: "5",
     name: "Problem Solving",
-    backendId: "2.6",
   },
 ];
 
@@ -44,28 +30,32 @@ interface Question {
   statement: string;
   type: string;
   level: string;
+  sub_competency?: string;
+  sub_competency_title?: string;
 }
 
-interface CategoryInfo {
+interface CompetencyInfo {
   id: string;
-  title: string;
-  description: string;
+  name: string;
+  sub_competencies: Record<string, any>;
 }
 
 const QuizPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [categoryInfo, setCategoryInfo] = useState<CategoryInfo | null>(null);
+  const [competencyInfo, setCompetencyInfo] = useState<CompetencyInfo | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get category from URL
-  const categoryId = window.location.pathname.split("/").pop() || "";
-  const category = categories.find((cat) => cat.id === categoryId);
+  // Get competency from URL
+  const competencyId = window.location.pathname.split("/").pop() || "";
+  const competency = competencies.find((comp) => comp.id === competencyId);
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      if (!category) {
-        setError("Category not found");
+      if (!competency) {
+        setError("Competency not found");
         setLoading(false);
         return;
       }
@@ -74,9 +64,9 @@ const QuizPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch category info and questions from backend
+        // Fetch main competency info and all questions from sub-competencies
         const response = await fetch(
-          `http://localhost:5000/api/categories/${category.backendId}`
+          `http://localhost:5000/api/competencies/${competencyId}`
         );
 
         if (!response.ok) {
@@ -84,7 +74,7 @@ const QuizPage: React.FC = () => {
         }
 
         const data = await response.json();
-        setCategoryInfo(data.category);
+        setCompetencyInfo(data.competency);
         setQuestions(data.questions);
       } catch (err) {
         console.error("Error fetching questions:", err);
@@ -95,7 +85,7 @@ const QuizPage: React.FC = () => {
     };
 
     fetchQuestions();
-  }, [category]);
+  }, [competency, competencyId]);
 
   if (loading) {
     return (
@@ -117,10 +107,10 @@ const QuizPage: React.FC = () => {
     );
   }
 
-  if (error || !category || !categoryInfo) {
+  if (error || !competency || !competencyInfo) {
     return (
       <div className="quiz-app">
-        <h1>{error || "Category not found"}</h1>
+        <h1>{error || "Competency not found"}</h1>
         <button onClick={() => (window.location.href = "/")}>
           Back to Home
         </button>
@@ -131,7 +121,7 @@ const QuizPage: React.FC = () => {
   if (questions.length === 0) {
     return (
       <div className="quiz-app">
-        <h1>No questions available for this category</h1>
+        <h1>No questions available for this competency</h1>
         <button onClick={() => (window.location.href = "/")}>
           Back to Home
         </button>
@@ -141,9 +131,9 @@ const QuizPage: React.FC = () => {
 
   return (
     <Quiz
-      categoryId={categoryId}
+      competencyId={competencyId}
       questions={questions}
-      categoryName={categoryInfo.title}
+      competencyName={competencyInfo.name}
     />
   );
 };

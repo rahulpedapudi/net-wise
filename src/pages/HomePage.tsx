@@ -5,34 +5,36 @@ import Navbar from "../components/Navbar";
 import { fuzzySearchWithScore } from "../utils/fuzzySearch";
 import { useAuth } from "../contexts/AuthContext";
 
-// Category data
-const categories = [
+// Main competency data
+const competencies = [
   {
-    id: "info-data-literacy",
+    id: "1",
     name: "Information and Data Literacy",
-    description: "Rate your skills in creating and editing digital content",
+    description:
+      "Test your skills in browsing, searching, filtering, evaluating, and managing digital information",
     icon: "🔍",
   },
   {
-    id: "communication-collaboration",
+    id: "2",
     name: "Communication and Collaboration",
-    description: "Assess your digital communication and teamwork skills",
+    description:
+      "Assess your digital communication, sharing, citizenship, collaboration, and netiquette skills",
     icon: "💬",
   },
   {
-    id: "digital-content-creation",
+    id: "3",
     name: "Digital Content Creation",
     description: "Rate your skills in creating and editing digital content",
     icon: "✍️",
   },
   {
-    id: "safety-security",
+    id: "4",
     name: "Safety and Security",
     description: "Test your knowledge of online safety and security practices",
     icon: "🛡️",
   },
   {
-    id: "problem-solving",
+    id: "5",
     name: "Problem Solving",
     description:
       "Evaluate your ability to solve technical and digital challenges",
@@ -52,7 +54,7 @@ const howItWorksSteps = [
     icon: "📊",
     title: "Get Visual Feedback",
     description:
-      "See what you know — and what you need to know — with category-wise scores.",
+      "See what you know — and what you need to know — with detailed sub-competency scores.",
   },
   {
     icon: "📚",
@@ -82,27 +84,22 @@ const skillAreas = [
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showQuiz, setShowQuiz] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const searchResults = fuzzySearchWithScore(
     searchTerm,
-    categories,
-    (category) => `${category.name} ${category.description}`
+    competencies,
+    (competency) => `${competency.name} ${competency.description}`
   );
 
-  const filteredCategories = searchResults.map((result) => result.item);
-
-  const handleCategoryClick = (categoryId: string) => {
-    navigate(`/quiz/${categoryId}`);
-  };
+  const filteredCompetencies = searchResults.map((result) => result.item);
 
   const handleStartAssessment = () => {
     if (!user) {
       navigate("/auth?next=/quiz");
     } else {
-      setShowQuiz(true);
+      navigate("/quiz");
     }
   };
 
@@ -112,37 +109,6 @@ const HomePage: React.FC = () => {
       .getElementById("how-it-works")
       ?.scrollIntoView({ behavior: "smooth" });
   };
-
-  if (showQuiz) {
-    return (
-      <div className="home-page">
-        <h1>Quiz Categories</h1>
-
-        <SearchBar
-          placeholder="Search categories..."
-          value={searchTerm}
-          onChange={(value) => setSearchTerm(value)}
-        />
-
-        <div className="categories-grid">
-          {filteredCategories.map((category) => (
-            <div
-              key={category.id}
-              className="category-card"
-              onClick={() => handleCategoryClick(category.id)}>
-              <div className="category-icon">{category.icon}</div>
-              <h3>{category.name}</h3>
-              <p>{category.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <button className="back-button" onClick={() => setShowQuiz(false)}>
-          ← Back to Home
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="landing-page">

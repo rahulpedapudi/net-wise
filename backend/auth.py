@@ -3,7 +3,7 @@ import secrets
 import string
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import request, jsonify, session
+from flask import request, jsonify, session, g
 from pymongo import MongoClient
 from bson import ObjectId
 import os
@@ -154,7 +154,7 @@ def require_auth(f):
             return jsonify({"error": "Authentication required"}), 401
 
         # Add user info to request
-        request.user = user
+        g.user = user
         return f(*args, **kwargs)
 
     return decorated_function
@@ -170,7 +170,7 @@ def optional_auth(f):
             session_token = request.cookies.get('session_token')
 
         user = verify_session(session_token)
-        request.user = user  # Will be None if not authenticated
+        g.user = user  # Will be None if not authenticated
         return f(*args, **kwargs)
 
     return decorated_function
