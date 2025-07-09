@@ -9,8 +9,7 @@ from bson import ObjectId
 import os
 
 # MongoDB connection
-client = MongoClient(
-    "mongodb+srv://rahulpedapudi01:Q6KC8S2yOvebW7ko@net-wise.x65vbp9.mongodb.net/")
+client = MongoClient('')
 db = client["netwise"]
 users_collection = db["users-db"]
 
