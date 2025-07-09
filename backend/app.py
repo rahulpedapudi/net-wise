@@ -11,8 +11,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv(
     'SECRET_KEY', 'your-secret-key-change-in-production')
 
-client = MongoClient(
-    "mongodb+srv://rahulpedapudi01:Q6KC8S2yOvebW7ko@net-wise.x65vbp9.mongodb.net/")
+client = MongoClient("")
 
 db = client["netwise"]
 collection = db["netwise-db"]
